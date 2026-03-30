@@ -4,7 +4,7 @@
 <img width="1200" height="475" alt="GHBanner" src="public/icon-pack-img.png" />
 </div>
 
-A massive collection of **1000+ SVG icons** designed to be minimalist, consistent, and easy to use in any web project or on Blogger. (We are still developing the rest of the icons)
+A massive collection of **1000+ SVG icons** designed to be minimalist, consistent, and easy to use in any web project or on Blogger. ( ⚠️ We are still developing the rest of the icons. Some things may not be available yet.)
 
 ---
 
