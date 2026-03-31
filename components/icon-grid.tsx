@@ -8,9 +8,9 @@ import { motion, AnimatePresence } from 'motion/react';
 
 interface Icon {
   name: string;
-  content: string;
-  innerContent: string;
+  path: string;
   viewBox: string;
+  isSolid: boolean;
 }
 
 interface IconGridProps {

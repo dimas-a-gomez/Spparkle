@@ -7,9 +7,9 @@ import { motion, AnimatePresence } from 'motion/react';
 interface IconModalProps {
   icon: {
     name: string;
-    content: string;
-    innerContent: string;
+    path: string;
     viewBox: string;
+    isSolid: boolean;
   } | null;
   onClose: () => void;
 }
@@ -22,8 +22,18 @@ export function IconModal({ icon, onClose }: IconModalProps) {
       if (e.key === 'Escape') onClose();
     };
     window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [onClose]);
+    
+    if (icon) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+      document.body.style.overflow = '';
+    };
+  }, [icon, onClose]);
 
   if (!icon) return null;
 
@@ -33,7 +43,7 @@ export function IconModal({ icon, onClose }: IconModalProps) {
     setTimeout(() => setCopiedType(null), 2000);
   };
 
-  const svgCode = icon.content;
+  const svgCode = `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="${icon.viewBox}" fill="${icon.isSolid ? 'currentColor' : 'none'}" stroke="${icon.isSolid ? 'none' : 'currentColor'}" stroke-width="${icon.isSolid ? '0' : '2'}" stroke-linecap="round" stroke-linejoin="round">\n  ${icon.path}\n</svg>`;
   const htmlCode = `<i class="icon-${icon.name}"></i>`;
   const bloggerCode = `<b:include name='icon-${icon.name}'/>`;
 
@@ -52,26 +62,44 @@ export function IconModal({ icon, onClose }: IconModalProps) {
           initial={{ opacity: 0, scale: 0.95, y: 10 }}
           animate={{ opacity: 1, scale: 1, y: 0 }}
           exit={{ opacity: 0, scale: 0.95, y: 10 }}
-          className="relative w-full max-w-2xl bg-white dark:bg-zinc-900 rounded-3xl shadow-2xl overflow-hidden border border-zinc-200/50 dark:border-zinc-800/50"
+          className="relative w-full max-w-2xl bg-white dark:bg-zinc-900 rounded-2xl shadow-2xl overflow-hidden border border-zinc-200/50 dark:border-zinc-800/50 flex flex-col max-h-[90vh]"
         >
-          <div className="flex items-center justify-between px-6 py-4 border-b border-zinc-100 dark:border-zinc-800 bg-zinc-50/50 dark:bg-zinc-900/50">
-            <h2 className="text-xl font-display font-semibold text-zinc-900 dark:text-zinc-50 capitalize flex items-center gap-2">
-              <span className="w-6 h-6 text-zinc-800 dark:text-zinc-200" dangerouslySetInnerHTML={{ __html: icon.content }} />
-              {icon.name}
+          <div className="flex-none flex items-center justify-between px-4 py-3 border-b border-zinc-100 dark:border-zinc-800 bg-zinc-50/50 dark:bg-zinc-900/50">
+            <div className="flex items-center gap-2">
+              <button 
+                onClick={onClose} 
+                className="w-3 h-3 rounded-full bg-[#ff5f56] hover:bg-[#ff5f56]/80 transition-colors flex items-center justify-center group" 
+                title="Close"
+              >
+                <X className="w-2 h-2 text-black/50 opacity-0 group-hover:opacity-100" />
+              </button>
+              <div className="w-3 h-3 rounded-full bg-[#ffbd2e]" />
+              <div className="w-3 h-3 rounded-full bg-[#27c93f]" />
+            </div>
+            <h2 className="text-sm font-display font-medium text-zinc-600 dark:text-zinc-400 capitalize absolute left-1/2 -translate-x-1/2">
+              {icon.name}.svg
             </h2>
-            <button
-              onClick={onClose}
-              className="p-2 text-zinc-400 dark:text-zinc-500 hover:text-zinc-900 dark:hover:text-zinc-100 hover:bg-zinc-200/50 dark:hover:bg-zinc-800/50 rounded-full transition-colors"
-            >
-              <X className="w-5 h-5" />
-            </button>
+            <div className="w-16" /> {/* Spacer to balance the header */}
           </div>
 
-          <div className="p-6 space-y-6">
-            <div className="flex items-center justify-center p-12 bg-zinc-50 dark:bg-zinc-950 rounded-2xl border border-zinc-100 dark:border-zinc-800/50">
+          <div className="p-6 overflow-y-auto space-y-6">
+            <div className="relative flex items-center justify-center p-12 bg-zinc-50 dark:bg-zinc-950 rounded-2xl border border-zinc-100 dark:border-zinc-800/50 overflow-hidden text-zinc-900 dark:text-zinc-100">
               <div 
-                className="w-32 h-32 text-zinc-900 dark:text-zinc-100"
-                dangerouslySetInnerHTML={{ __html: icon.content }}
+                className="absolute inset-0 pointer-events-none opacity-[0.05] dark:opacity-[0.1]" 
+                style={{ 
+                  backgroundImage: 'linear-gradient(to right, currentColor 1px, transparent 1px), linear-gradient(to bottom, currentColor 1px, transparent 1px)', 
+                  backgroundSize: '24px 24px' 
+                }} 
+              />
+              <svg 
+                className="relative z-10 w-[80px] h-[80px]"
+                viewBox={icon.viewBox}
+                fill={icon.isSolid ? "currentColor" : "none"}
+                stroke={icon.isSolid ? "none" : "currentColor"}
+                strokeWidth={icon.isSolid ? undefined : "2"}
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                dangerouslySetInnerHTML={{ __html: icon.path }}
               />
             </div>
 
@@ -119,12 +147,11 @@ function CodeBlock({ title, icon, code, type, copied, onCopy }: any) {
           {title}
         </label>
       </div>
-      <div className="relative group">
-        <pre className="p-4 bg-zinc-900 dark:bg-zinc-950 text-zinc-100 dark:text-zinc-300 rounded-xl text-sm font-mono overflow-x-auto border border-zinc-800 dark:border-zinc-800/80">
+      <div className="relative group cursor-pointer" onClick={onCopy} title="Click to copy">
+        <pre className="p-4 pr-12 bg-zinc-900 dark:bg-zinc-950 text-zinc-100 dark:text-zinc-300 rounded-xl text-sm font-mono border border-zinc-800 dark:border-zinc-800/80 transition-colors hover:border-zinc-700 dark:hover:border-zinc-700 whitespace-pre-wrap break-all">
           <code>{code}</code>
         </pre>
         <button
-          onClick={onCopy}
           className="absolute top-3 right-3 p-2 bg-zinc-800 dark:bg-zinc-800/50 text-zinc-300 hover:text-white hover:bg-zinc-700 dark:hover:bg-zinc-700 rounded-lg transition-colors border border-zinc-700 dark:border-zinc-700/50"
           title="Copy code"
         >

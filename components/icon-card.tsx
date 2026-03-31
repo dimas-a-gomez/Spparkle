@@ -6,9 +6,9 @@ import { Check, Copy } from 'lucide-react';
 interface IconCardProps {
   icon: {
     name: string;
-    content: string;
-    innerContent: string;
+    path: string;
     viewBox: string;
+    isSolid: boolean;
   };
   onClick: () => void;
 }
@@ -28,9 +28,15 @@ export function IconCard({ icon, onClick }: IconCardProps) {
       onClick={onClick}
       className="group relative flex flex-col items-center justify-center p-6 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-2xl hover:border-zinc-300 dark:hover:border-zinc-700 hover:shadow-sm dark:hover:shadow-none transition-all cursor-pointer aspect-square"
     >
-      <div 
+      <svg 
         className="w-8 h-8 text-zinc-800 dark:text-zinc-200 mb-3 transition-transform group-hover:scale-110"
-        dangerouslySetInnerHTML={{ __html: icon.content }}
+        viewBox={icon.viewBox}
+        fill={icon.isSolid ? "currentColor" : "none"}
+        stroke={icon.isSolid ? "none" : "currentColor"}
+        strokeWidth={icon.isSolid ? undefined : "2"}
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        dangerouslySetInnerHTML={{ __html: icon.path }}
       />
       <span className="text-xs font-medium text-zinc-500 dark:text-zinc-400 truncate w-full text-center">
         {icon.name}

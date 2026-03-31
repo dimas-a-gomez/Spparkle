@@ -1,65 +1,20 @@
-# ✨ Sparkle Remix Icons
-
 <div align="center">
-<img width="1200" height="475" alt="GHBanner" src="public/icon-pack-img.png" />
+<img width="1200" height="475" alt="GHBanner" src="https://github.com/user-attachments/assets/0aa67016-6eaf-458a-adb2-6e31a0763ed6" />
 </div>
 
-A massive collection of **1000+ SVG icons** designed to be minimalist, consistent, and easy to use in any web project or on Blogger. ( ⚠️ We are still developing the rest of the icons. Some things may not be available yet.)
+# Run and deploy your AI Studio app
 
----
+This contains everything you need to run your app locally.
 
-## 🚀 Features
-* **1000+ Icons:** A massive expansion based on the geometric aesthetic of Remix Icon.
-* **Full Optimization:** Clean and lightweight SVG files.
-* **Blogger Compatibility:** Includes ready-to-use code with `<b:includable>`.
-* **Multi-format:** Copy SVG or HTML code, or download the file directly from the catalog.
+View your app in AI Studio: https://ai.studio/apps/cf56e798-1d85-4377-aacc-09e68a3cae25
 
----
+## Run Locally
 
-## 📦 Installation and Usage
+**Prerequisites:**  Node.js
 
-### For Web Developers
-You can use the icons directly via HTML tags:
-```html
-<i data-i="alarm-clock"></i>
-```
 
----
-
-## For Blogger Users
-Copy the `blogger-icons.xml` file located in the `/dist` folder and paste it into your template before `</b:defaultmarkupserver>`. Then, call them like this:
-
-```html
-<b:include name='i:sparkkle-remix' data='{ icon: "adobe" }'/>
-```
-
----
-
-## 🛠️ Local Development
-If you want to run the catalog on your machine:
-
-### Install dependencies:
-
-`npm install`
-
----
-
-### Environment Variable Setup:
-Create a `.env.local` file and add your `GEMINI_API_KEY` (if you are using advanced AI search features).
-
----
-
-### Run the site:
-
-`npm run dev`
-
----
-
-## 📜 License and Attribution
-This project is a derivative work and expansion of Remix Icon.
-
-* Original Icons and Expansion: Apache 2.0 License.
-
-* Expansion Author: Dimas Gómez.
-
-Made with ❤️ in Colombia by dimas-a-gomez.
+1. Install dependencies:
+   `npm install`
+2. Set the `GEMINI_API_KEY` in [.env.local](.env.local) to your Gemini API key
+3. Run the app:
+   `npm run dev`
