@@ -19,12 +19,22 @@ const icons = files.map(file => {
   const content = fs.readFileSync(path.join(iconsDir, file), 'utf-8');
   
   const innerMatch = content.match(/<svg[^>]*>([\s\S]*?)<\/svg>/i);
-  const innerContent = innerMatch ? innerMatch[1].trim() : '';
+  let innerContent = innerMatch ? innerMatch[1].trim() : '';
+  
+  // Clean up Figma exports automatically
+  innerContent = innerContent
+    // Remove transparent bounding boxes often exported by Figma
+    .replace(/<rect[^>]*fill="none"[^>]*\/>/gi, '')
+    // Replace any hardcoded fill color (except 'none') with 'currentColor'
+    .replace(/fill="(?!(?:none|currentColor))[^"]+"/gi, 'fill="currentColor"')
+    // Replace any hardcoded stroke color (except 'none') with 'currentColor'
+    .replace(/stroke="(?!(?:none|currentColor))[^"]+"/gi, 'stroke="currentColor"');
   
   const viewBoxMatch = content.match(/viewBox="([^"]+)"/i);
   const viewBox = viewBoxMatch ? viewBoxMatch[1] : '0 0 24 24';
 
-  const isSolid = content.includes('fill="currentColor"') && !content.includes('fill="none"');
+  // Determine if solid based on the original content
+  const isSolid = !content.includes('stroke=') && content.includes('fill=') && !content.includes('fill="none"');
 
   return {
     name,
