@@ -1,41 +1,41 @@
 'use client';
 
 import { useState, useMemo } from 'react';
-import { IconCard } from './icon-card';
-import { IconModal } from './icon-modal';
+import { AvatarCard } from './avatar-card';
+import { AvatarModal } from './avatar-modal';
 import { SearchBar } from './search-bar';
 import { motion, AnimatePresence } from 'motion/react';
 
-interface Icon {
+interface Avatar {
   name: string;
   path: string;
   viewBox: string;
   isSolid: boolean;
 }
 
-interface IconGridProps {
-  icons: Icon[];
+interface AvatarGridProps {
+  avatars: Avatar[];
 }
 
-export function IconGrid({ icons }: IconGridProps) {
+export function AvatarGrid({ avatars }: AvatarGridProps) {
   const [searchQuery, setSearchQuery] = useState('');
-  const [selectedIcon, setSelectedIcon] = useState<Icon | null>(null);
+  const [selectedAvatar, setSelectedAvatar] = useState<Avatar | null>(null);
 
-  const filteredIcons = useMemo(() => {
-    if (!searchQuery) return icons;
-    return icons.filter((icon) =>
-      icon.name.toLowerCase().includes(searchQuery.toLowerCase())
+  const filteredAvatars = useMemo(() => {
+    if (!searchQuery) return avatars;
+    return avatars.filter((avatar) =>
+      avatar.name.toLowerCase().includes(searchQuery.toLowerCase())
     );
-  }, [icons, searchQuery]);
+  }, [avatars, searchQuery]);
 
   return (
     <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
       <div className="mb-12 text-center space-y-4">
         <h1 className="text-4xl md:text-5xl font-display font-bold tracking-tight text-zinc-900 dark:text-zinc-50">
-          Sparkkle Icons
+          Sparkkle Avatars
         </h1>
         <p className="text-lg text-zinc-500 dark:text-zinc-400 max-w-2xl mx-auto">
-          A beautiful, minimalist collection of custom SVG icons.
+          A collection of vector-style characters and avatars.
         </p>
       </div>
 
@@ -43,9 +43,9 @@ export function IconGrid({ icons }: IconGridProps) {
         <SearchBar value={searchQuery} onChange={setSearchQuery} />
       </div>
 
-      {filteredIcons.length === 0 ? (
+      {filteredAvatars.length === 0 ? (
         <div className="text-center py-24">
-          <p className="text-zinc-500 dark:text-zinc-400 text-lg">No icons found matching &quot;{searchQuery}&quot;</p>
+          <p className="text-zinc-500 dark:text-zinc-400 text-lg">No avatars found matching &quot;{searchQuery}&quot;</p>
           <button
             onClick={() => setSearchQuery('')}
             className="mt-4 text-zinc-900 dark:text-zinc-50 font-medium hover:underline"
@@ -59,18 +59,18 @@ export function IconGrid({ icons }: IconGridProps) {
           className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4 sm:gap-6"
         >
           <AnimatePresence>
-            {filteredIcons.map((icon) => (
+            {filteredAvatars.map((avatar) => (
               <motion.div
-                key={icon.name}
+                key={avatar.name}
                 layout
                 initial={{ opacity: 0, scale: 0.9 }}
                 animate={{ opacity: 1, scale: 1 }}
                 exit={{ opacity: 0, scale: 0.9 }}
                 transition={{ duration: 0.2 }}
               >
-                <IconCard
-                  icon={icon}
-                  onClick={() => setSelectedIcon(icon)}
+                <AvatarCard
+                  avatar={avatar}
+                  onClick={() => setSelectedAvatar(avatar)}
                 />
               </motion.div>
             ))}
@@ -78,10 +78,10 @@ export function IconGrid({ icons }: IconGridProps) {
         </motion.div>
       )}
 
-      {selectedIcon && (
-        <IconModal
-          icon={selectedIcon}
-          onClose={() => setSelectedIcon(null)}
+      {selectedAvatar && (
+        <AvatarModal
+          avatar={selectedAvatar}
+          onClose={() => setSelectedAvatar(null)}
         />
       )}
     </div>

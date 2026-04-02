@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { X, Copy, Check, Code, Terminal, FileCode } from 'lucide-react';
+import { X, Copy, Check, Code, Terminal, FileCode, Download } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 
 interface IconModalProps {
@@ -101,6 +101,25 @@ export function IconModal({ icon, onClose }: IconModalProps) {
                 strokeLinejoin="round"
                 dangerouslySetInnerHTML={{ __html: icon.path }}
               />
+              
+              <button
+                onClick={() => {
+                  const svgContent = `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="${icon.viewBox}" fill="${icon.isSolid ? 'currentColor' : 'none'}" stroke="${icon.isSolid ? 'none' : 'currentColor'}" stroke-width="${icon.isSolid ? '0' : '2'}" stroke-linecap="round" stroke-linejoin="round">\n  ${icon.path}\n</svg>`;
+                  const blob = new Blob([svgContent], { type: 'image/svg+xml' });
+                  const url = URL.createObjectURL(blob);
+                  const a = document.createElement('a');
+                  a.href = url;
+                  a.download = `spkr-${icon.name}.svg`;
+                  document.body.appendChild(a);
+                  a.click();
+                  document.body.removeChild(a);
+                  URL.revokeObjectURL(url);
+                }}
+                className="absolute bottom-4 right-4 flex items-center gap-2 px-4 py-2 bg-zinc-900 dark:bg-zinc-100 text-white dark:text-zinc-900 rounded-lg text-sm font-medium hover:bg-zinc-800 dark:hover:bg-zinc-200 transition-colors shadow-sm z-20"
+              >
+                <Download className="w-4 h-4" />
+                Download SVG
+              </button>
             </div>
 
             <div className="grid gap-4">
