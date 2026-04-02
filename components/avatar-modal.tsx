@@ -9,7 +9,9 @@ interface AvatarModalProps {
     name: string;
     path: string;
     viewBox: string;
-    isSolid: boolean;
+    fill?: string;
+    stroke?: string;
+    strokeWidth?: string;
   } | null;
   onClose: () => void;
 }
@@ -36,7 +38,7 @@ export function AvatarModal({ avatar, onClose }: AvatarModalProps) {
   if (!avatar) return null;
 
   const handleDownload = () => {
-    const svgContent = `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="${avatar.viewBox}" fill="${avatar.isSolid ? 'currentColor' : 'none'}" stroke="${avatar.isSolid ? 'none' : 'currentColor'}" stroke-width="${avatar.isSolid ? '0' : '2'}" stroke-linecap="round" stroke-linejoin="round">\n  ${avatar.path}\n</svg>`;
+    const svgContent = `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="${avatar.viewBox}" fill="${avatar.fill || 'none'}" stroke="${avatar.stroke || 'none'}" ${avatar.strokeWidth ? `stroke-width="${avatar.strokeWidth}"` : ''} stroke-linecap="round" stroke-linejoin="round">\n  ${avatar.path}\n</svg>`;
     const blob = new Blob([svgContent], { type: 'image/svg+xml' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
@@ -95,9 +97,9 @@ export function AvatarModal({ avatar, onClose }: AvatarModalProps) {
               <svg 
                 className="relative z-10 w-[120px] h-[120px]"
                 viewBox={avatar.viewBox}
-                fill={avatar.isSolid ? "currentColor" : "none"}
-                stroke={avatar.isSolid ? "none" : "currentColor"}
-                strokeWidth={avatar.isSolid ? undefined : "2"}
+                fill={avatar.fill || "none"}
+                stroke={avatar.stroke || "none"}
+                strokeWidth={avatar.strokeWidth}
                 strokeLinecap="round"
                 strokeLinejoin="round"
                 dangerouslySetInnerHTML={{ __html: avatar.path }}

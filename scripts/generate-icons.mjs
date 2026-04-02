@@ -21,26 +21,40 @@ const icons = files.map(file => {
   const innerMatch = content.match(/<svg[^>]*>([\s\S]*?)<\/svg>/i);
   let innerContent = innerMatch ? innerMatch[1].trim() : '';
   
-  // Clean up Figma exports automatically
+  // Clean up Figma exports safely
   innerContent = innerContent
-    // Remove transparent bounding boxes often exported by Figma
-    .replace(/<rect[^>]*fill="none"[^>]*\/>/gi, '')
-    // Replace any hardcoded fill color (except 'none') with 'currentColor'
-    .replace(/fill="(?!(?:none|currentColor))[^"]+"/gi, 'fill="currentColor"')
-    // Replace any hardcoded stroke color (except 'none') with 'currentColor'
-    .replace(/stroke="(?!(?:none|currentColor))[^"]+"/gi, 'stroke="currentColor"');
+    .replace(/<rect[^>]*fill="none"[^>]*\/>/gi, '') // Remove transparent bounding boxes
+    .replace(/(fill|stroke)="(#000000|#000|black|#111111|#111|#222222|#222|#333333|#333|#D9D9D9)"/gi, '$1="currentColor"')
+    .replace(/(fill|stroke)="(#ffffff|#fff|white)"/gi, '$1="none"');
   
   const viewBoxMatch = content.match(/viewBox="([^"]+)"/i);
   const viewBox = viewBoxMatch ? viewBoxMatch[1] : '0 0 24 24';
 
-  // Determine if solid based on the original content
-  const isSolid = !content.includes('stroke=') && content.includes('fill=') && !content.includes('fill="none"');
+  const svgTagMatch = content.match(/<svg([^>]*)>/i);
+  const svgAttrs = svgTagMatch ? svgTagMatch[1] : '';
+  
+  const getAttr = (attr) => {
+    const match = svgAttrs.match(new RegExp(`${attr}="([^"]+)"`, 'i'));
+    return match ? match[1] : undefined;
+  };
+
+  let fill = getAttr('fill');
+  if (fill && /^(#000000|#000|black|#111111|#111|#222222|#222|#333333|#333|#D9D9D9)$/i.test(fill)) fill = 'currentColor';
+  if (fill && /^(#ffffff|#fff|white)$/i.test(fill)) fill = 'none';
+
+  let stroke = getAttr('stroke');
+  if (stroke && /^(#000000|#000|black|#111111|#111|#222222|#222|#333333|#333|#D9D9D9)$/i.test(stroke)) stroke = 'currentColor';
+  if (stroke && /^(#ffffff|#fff|white)$/i.test(stroke)) stroke = 'none';
+
+  const strokeWidth = getAttr('stroke-width') || getAttr('strokeWidth');
 
   return {
     name,
     path: innerContent,
     viewBox,
-    isSolid
+    fill,
+    stroke,
+    strokeWidth
   };
 });
 

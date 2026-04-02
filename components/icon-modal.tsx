@@ -9,7 +9,9 @@ interface IconModalProps {
     name: string;
     path: string;
     viewBox: string;
-    isSolid: boolean;
+    fill?: string;
+    stroke?: string;
+    strokeWidth?: string;
   } | null;
   onClose: () => void;
 }
@@ -43,7 +45,7 @@ export function IconModal({ icon, onClose }: IconModalProps) {
     setTimeout(() => setCopiedType(null), 2000);
   };
 
-  const svgCode = `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="${icon.viewBox}" fill="${icon.isSolid ? 'currentColor' : 'none'}" stroke="${icon.isSolid ? 'none' : 'currentColor'}" stroke-width="${icon.isSolid ? '0' : '2'}" stroke-linecap="round" stroke-linejoin="round">\n  ${icon.path}\n</svg>`;
+  const svgCode = `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="${icon.viewBox}" fill="${icon.fill || 'none'}" stroke="${icon.stroke || 'none'}" ${icon.strokeWidth ? `stroke-width="${icon.strokeWidth}"` : ''} stroke-linecap="round" stroke-linejoin="round">\n  ${icon.path}\n</svg>`;
   const htmlCode = `<i class="icon-${icon.name}"></i>`;
   const bloggerCode = `<b:include name='icon-${icon.name}'/>`;
 
@@ -94,9 +96,9 @@ export function IconModal({ icon, onClose }: IconModalProps) {
               <svg 
                 className="relative z-10 w-[80px] h-[80px]"
                 viewBox={icon.viewBox}
-                fill={icon.isSolid ? "currentColor" : "none"}
-                stroke={icon.isSolid ? "none" : "currentColor"}
-                strokeWidth={icon.isSolid ? undefined : "2"}
+                fill={icon.fill || "none"}
+                stroke={icon.stroke || "none"}
+                strokeWidth={icon.strokeWidth}
                 strokeLinecap="round"
                 strokeLinejoin="round"
                 dangerouslySetInnerHTML={{ __html: icon.path }}
@@ -104,8 +106,7 @@ export function IconModal({ icon, onClose }: IconModalProps) {
               
               <button
                 onClick={() => {
-                  const svgContent = `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="${icon.viewBox}" fill="${icon.isSolid ? 'currentColor' : 'none'}" stroke="${icon.isSolid ? 'none' : 'currentColor'}" stroke-width="${icon.isSolid ? '0' : '2'}" stroke-linecap="round" stroke-linejoin="round">\n  ${icon.path}\n</svg>`;
-                  const blob = new Blob([svgContent], { type: 'image/svg+xml' });
+                  const blob = new Blob([svgCode], { type: 'image/svg+xml' });
                   const url = URL.createObjectURL(blob);
                   const a = document.createElement('a');
                   a.href = url;

@@ -8,7 +8,9 @@ interface IconCardProps {
     name: string;
     path: string;
     viewBox: string;
-    isSolid: boolean;
+    fill?: string;
+    stroke?: string;
+    strokeWidth?: string;
   };
   onClick: () => void;
 }
@@ -31,9 +33,9 @@ export function IconCard({ icon, onClick }: IconCardProps) {
       <svg 
         className="w-8 h-8 text-zinc-800 dark:text-zinc-200 mb-3 transition-transform group-hover:scale-110"
         viewBox={icon.viewBox}
-        fill={icon.isSolid ? "currentColor" : "none"}
-        stroke={icon.isSolid ? "none" : "currentColor"}
-        strokeWidth={icon.isSolid ? undefined : "2"}
+        fill={icon.fill || "none"}
+        stroke={icon.stroke || "none"}
+        strokeWidth={icon.strokeWidth}
         strokeLinecap="round"
         strokeLinejoin="round"
         dangerouslySetInnerHTML={{ __html: icon.path }}

@@ -7,7 +7,9 @@ interface AvatarCardProps {
     name: string;
     path: string;
     viewBox: string;
-    isSolid: boolean;
+    fill?: string;
+    stroke?: string;
+    strokeWidth?: string;
   };
   onClick: () => void;
 }
@@ -15,7 +17,7 @@ interface AvatarCardProps {
 export function AvatarCard({ avatar, onClick }: AvatarCardProps) {
   const handleDownload = (e: React.MouseEvent) => {
     e.stopPropagation();
-    const svgContent = `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="${avatar.viewBox}" fill="${avatar.isSolid ? 'currentColor' : 'none'}" stroke="${avatar.isSolid ? 'none' : 'currentColor'}" stroke-width="${avatar.isSolid ? '0' : '2'}" stroke-linecap="round" stroke-linejoin="round">\n  ${avatar.path}\n</svg>`;
+    const svgContent = `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="${avatar.viewBox}" fill="${avatar.fill || 'none'}" stroke="${avatar.stroke || 'none'}" ${avatar.strokeWidth ? `stroke-width="${avatar.strokeWidth}"` : ''} stroke-linecap="round" stroke-linejoin="round">\n  ${avatar.path}\n</svg>`;
     const blob = new Blob([svgContent], { type: 'image/svg+xml' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
@@ -35,9 +37,9 @@ export function AvatarCard({ avatar, onClick }: AvatarCardProps) {
       <svg 
         className="w-12 h-12 text-zinc-800 dark:text-zinc-200 mb-3 transition-transform group-hover:scale-110"
         viewBox={avatar.viewBox}
-        fill={avatar.isSolid ? "currentColor" : "none"}
-        stroke={avatar.isSolid ? "none" : "currentColor"}
-        strokeWidth={avatar.isSolid ? undefined : "2"}
+        fill={avatar.fill || "none"}
+        stroke={avatar.stroke || "none"}
+        strokeWidth={avatar.strokeWidth}
         strokeLinecap="round"
         strokeLinejoin="round"
         dangerouslySetInnerHTML={{ __html: avatar.path }}
