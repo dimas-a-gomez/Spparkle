@@ -12,7 +12,6 @@ interface IconModalProps {
     fill?: string;
     stroke?: string;
     strokeWidth?: string;
-    cleanSvg?: string;
   } | null;
   onClose: () => void;
 }
@@ -126,30 +125,12 @@ export function IconModal({ icon, onClose }: IconModalProps) {
 
             <div className="grid gap-4">
               <CodeBlock
-                title="React Component"
-                icon={<Code className="w-4 h-4" />}
-                code={`<Icon name="${icon.name}" />`}
-                type="react"
-                copied={copiedType === 'react'}
-                onCopy={() => handleCopy(`<Icon name="${icon.name}" />`, 'react')}
-              />
-              
-              <CodeBlock
-                title="WordPress Shortcode"
-                icon={<Code className="w-4 h-4" />}
-                code={`[spkr icon="${icon.name}"]`}
-                type="wordpress"
-                copied={copiedType === 'wordpress'}
-                onCopy={() => handleCopy(`[spkr icon="${icon.name}"]`, 'wordpress')}
-              />
-              
-              <CodeBlock
                 title="SVG Code"
                 icon={<Code className="w-4 h-4" />}
-                code={icon.cleanSvg || svgCode}
+                code={svgCode}
                 type="svg"
                 copied={copiedType === 'svg'}
-                onCopy={() => handleCopy(icon.cleanSvg || svgCode, 'svg')}
+                onCopy={() => handleCopy(svgCode, 'svg')}
               />
               
               <CodeBlock
