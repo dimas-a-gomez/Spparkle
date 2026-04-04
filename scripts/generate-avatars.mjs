@@ -5,18 +5,18 @@ import { fileURLToPath } from 'url';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-const iconsDir = path.join(__dirname, '../icons');
-const outputFile = path.join(__dirname, '../public/icons.json');
+const avatarsDir = path.join(__dirname, '../avatars');
+const outputFile = path.join(__dirname, '../public/avatars.json');
 
-if (!fs.existsSync(iconsDir)) {
-  fs.mkdirSync(iconsDir, { recursive: true });
+if (!fs.existsSync(avatarsDir)) {
+  fs.mkdirSync(avatarsDir, { recursive: true });
 }
 
-const files = fs.readdirSync(iconsDir).filter(file => file.endsWith('.svg'));
+const files = fs.readdirSync(avatarsDir).filter(file => file.endsWith('.svg'));
 
-const icons = files.map(file => {
+const avatars = files.map(file => {
   const name = path.basename(file, '.svg');
-  const content = fs.readFileSync(path.join(iconsDir, file), 'utf-8');
+  const content = fs.readFileSync(path.join(avatarsDir, file), 'utf-8');
   
   const innerMatch = content.match(/<svg[^>]*>([\s\S]*?)<\/svg>/i);
   let innerContent = innerMatch ? innerMatch[1].trim() : '';
@@ -62,5 +62,5 @@ if (!fs.existsSync(path.dirname(outputFile))) {
   fs.mkdirSync(path.dirname(outputFile), { recursive: true });
 }
 
-fs.writeFileSync(outputFile, JSON.stringify(icons, null, 2));
-console.log(`Generated ${outputFile} with ${icons.length} icons.`);
+fs.writeFileSync(outputFile, JSON.stringify(avatars, null, 2));
+console.log(`Generated ${outputFile} with ${avatars.length} avatars.`);

@@ -10,6 +10,9 @@ interface Icon {
   name: string;
   path: string;
   viewBox: string;
+  fill?: string;
+  stroke?: string;
+  strokeWidth?: string;
 }
 
 interface IconGridProps {

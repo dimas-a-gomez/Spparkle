@@ -8,6 +8,9 @@ interface IconCardProps {
     name: string;
     path: string;
     viewBox: string;
+    fill?: string;
+    stroke?: string;
+    strokeWidth?: string;
   };
   onClick: () => void;
 }
@@ -28,8 +31,13 @@ export function IconCard({ icon, onClick }: IconCardProps) {
       className="group relative flex flex-col items-center justify-center p-6 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-2xl hover:border-zinc-300 dark:hover:border-zinc-700 hover:shadow-sm dark:hover:shadow-none transition-all cursor-pointer aspect-square"
     >
       <svg 
-        className="spkr w-8 h-8 text-zinc-800 dark:text-zinc-200 mb-3 transition-transform group-hover:scale-110"
+        className="w-8 h-8 text-zinc-800 dark:text-zinc-200 mb-3 transition-transform group-hover:scale-110"
         viewBox={icon.viewBox}
+        fill={icon.fill || "none"}
+        stroke={icon.stroke || "none"}
+        strokeWidth={icon.strokeWidth}
+        strokeLinecap="round"
+        strokeLinejoin="round"
         dangerouslySetInnerHTML={{ __html: icon.path }}
       />
       <span className="text-xs font-medium text-zinc-500 dark:text-zinc-400 truncate w-full text-center">
