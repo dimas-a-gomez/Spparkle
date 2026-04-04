@@ -6,61 +6,60 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const iconsDir = path.join(__dirname, '../icons');
-const outputFile = path.join(__dirname, '../public/icons.json');
+const avatarsDir = path.join(__dirname, '../avatars');
+const iconsOutputFile = path.join(__dirname, '../public/icons.json');
+const avatarsOutputFile = path.join(__dirname, '../public/avatars.json');
+const bloggerOutputFile = path.join(__dirname, '../public/blogger-setup.txt');
 
-if (!fs.existsSync(iconsDir)) {
-  fs.mkdirSync(iconsDir, { recursive: true });
+function processDirectory(dir, outputFile) {
+  if (!fs.existsSync(dir)) {
+    fs.mkdirSync(dir, { recursive: true });
+  }
+
+  const files = fs.readdirSync(dir).filter(file => file.endsWith('.svg'));
+  let bloggerContent = '';
+
+  const items = files.map(file => {
+    const name = path.basename(file, '.svg');
+    let content = fs.readFileSync(path.join(dir, file), 'utf-8');
+    
+    const innerMatch = content.match(/<svg[^>]*>([\s\S]*?)<\/svg>/i);
+    let innerContent = innerMatch ? innerMatch[1].trim() : '';
+    
+    // Clean up Figma exports safely
+    innerContent = innerContent
+      .replace(/<rect[^>]*fill="none"[^>]*\/>/gi, '') // Remove transparent bounding boxes
+      .replace(/(fill|stroke)="([^"]+)"/gi, (match, attr, value) => {
+        if (value.toLowerCase() === 'none') return match;
+        if (value.toLowerCase() === 'currentcolor') return match;
+        return `${attr}="currentColor"`;
+      });
+    
+    const cleanSvg = `<svg class="spkr" viewBox="0 0 24 24">\n  ${innerContent}\n</svg>`;
+    
+    bloggerContent += `<b:includable id='icon-${name}'>\n  ${cleanSvg}\n</b:includable>\n\n`;
+
+    return {
+      name,
+      path: innerContent,
+      viewBox: '0 0 24 24',
+      cleanSvg
+    };
+  });
+
+  if (!fs.existsSync(path.dirname(outputFile))) {
+    fs.mkdirSync(path.dirname(outputFile), { recursive: true });
+  }
+
+  fs.writeFileSync(outputFile, JSON.stringify(items, null, 2));
+  console.log(`Generated ${outputFile} with ${items.length} items.`);
+  
+  return { items, bloggerContent };
 }
 
-const files = fs.readdirSync(iconsDir).filter(file => file.endsWith('.svg'));
+const iconsResult = processDirectory(iconsDir, iconsOutputFile);
+const avatarsResult = processDirectory(avatarsDir, avatarsOutputFile);
 
-const icons = files.map(file => {
-  const name = path.basename(file, '.svg');
-  const content = fs.readFileSync(path.join(iconsDir, file), 'utf-8');
-  
-  const innerMatch = content.match(/<svg[^>]*>([\s\S]*?)<\/svg>/i);
-  let innerContent = innerMatch ? innerMatch[1].trim() : '';
-  
-  // Clean up Figma exports safely
-  innerContent = innerContent
-    .replace(/<rect[^>]*fill="none"[^>]*\/>/gi, '') // Remove transparent bounding boxes
-    .replace(/(fill|stroke)="(#000000|#000|black|#111111|#111|#222222|#222|#333333|#333|#D9D9D9)"/gi, '$1="currentColor"')
-    .replace(/(fill|stroke)="(#ffffff|#fff|white)"/gi, '$1="none"');
-  
-  const viewBoxMatch = content.match(/viewBox="([^"]+)"/i);
-  const viewBox = viewBoxMatch ? viewBoxMatch[1] : '0 0 24 24';
-
-  const svgTagMatch = content.match(/<svg([^>]*)>/i);
-  const svgAttrs = svgTagMatch ? svgTagMatch[1] : '';
-  
-  const getAttr = (attr) => {
-    const match = svgAttrs.match(new RegExp(`${attr}="([^"]+)"`, 'i'));
-    return match ? match[1] : undefined;
-  };
-
-  let fill = getAttr('fill');
-  if (fill && /^(#000000|#000|black|#111111|#111|#222222|#222|#333333|#333|#D9D9D9)$/i.test(fill)) fill = 'currentColor';
-  if (fill && /^(#ffffff|#fff|white)$/i.test(fill)) fill = 'none';
-
-  let stroke = getAttr('stroke');
-  if (stroke && /^(#000000|#000|black|#111111|#111|#222222|#222|#333333|#333|#D9D9D9)$/i.test(stroke)) stroke = 'currentColor';
-  if (stroke && /^(#ffffff|#fff|white)$/i.test(stroke)) stroke = 'none';
-
-  const strokeWidth = getAttr('stroke-width') || getAttr('strokeWidth');
-
-  return {
-    name,
-    path: innerContent,
-    viewBox,
-    fill,
-    stroke,
-    strokeWidth
-  };
-});
-
-if (!fs.existsSync(path.dirname(outputFile))) {
-  fs.mkdirSync(path.dirname(outputFile), { recursive: true });
-}
-
-fs.writeFileSync(outputFile, JSON.stringify(icons, null, 2));
-console.log(`Generated ${outputFile} with ${icons.length} icons.`);
+const fullBloggerContent = iconsResult.bloggerContent + avatarsResult.bloggerContent;
+fs.writeFileSync(bloggerOutputFile, fullBloggerContent.trim());
+console.log(`Generated ${bloggerOutputFile}`);
