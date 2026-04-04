@@ -15,7 +15,7 @@ const spaceMono = Space_Mono({
 });
 
 export const metadata: Metadata = {
-  title: 'Spparkle Remix',
+  title: 'Spparkle',
   description: 'A custom icon catalog similar to Lucide Icons',
 };
 
