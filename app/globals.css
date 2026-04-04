@@ -42,3 +42,10 @@
   --font-mono: var(--font-mono), ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
   --font-display: var(--font-display), 'Vend Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
 }
+
+@layer utilities {
+  .spkr {
+    width: 1em;
+    height: 1em;
+  }
+}
