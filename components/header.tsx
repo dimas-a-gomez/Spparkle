@@ -2,6 +2,7 @@
 
 import { useTheme } from 'next-themes';
 import { useEffect, useState } from 'react';
+import Link from 'next/link';
 
 export function Header() {
   const { theme, setTheme } = useTheme();
@@ -14,6 +15,17 @@ export function Header() {
 
   return (
     <header className="w-full flex justify-end items-center p-4 sm:px-8 gap-4 absolute top-0 right-0 z-10">
+      <Link 
+        href="/docs" 
+        className="text-zinc-500 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-50 transition-colors p-2 rounded-full hover:bg-zinc-200/50 dark:hover:bg-zinc-800/50"
+        aria-label="Documentation"
+      >
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M8 6H16V8H8V6Z" fill="currentColor"/>
+          <path d="M16 10H8V12H16V10Z" fill="currentColor"/>
+          <path fillRule="evenodd" clipRule="evenodd" d="M20 2H4V22H20V2ZM6 16H18V4H6V16ZM6 18V20H18V18H6Z" fill="currentColor"/>
+        </svg>
+      </Link>
       <a 
         href="https://github.com" 
         target="_blank" 

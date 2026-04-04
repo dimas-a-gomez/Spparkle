@@ -1,0 +1,31 @@
+# Installation Guide
+
+Welcome to the Spparkle installation guide. Here you will learn how to integrate our icons into different platforms.
+
+## HTML Sites
+
+To use Spparkle icons in a standard HTML site, simply copy the SVG code provided in the icon modal and paste it directly into your HTML.
+
+```html
+<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+  <!-- Icon path here -->
+</svg>
+```
+
+## Blogger Templates
+
+For Blogger, you can use the Blogger XML include tag if you have defined the icons in your theme, or simply paste the SVG code directly into your HTML widget or theme XML.
+
+```xml
+<b:include name='icon-heart'/>
+```
+
+## WordPress Themes
+
+In WordPress, you can insert the SVG code directly into a Custom HTML block in the Gutenberg editor, or use a plugin that allows SVG uploads to add them to your Media Library.
+
+If you are a theme developer, you can include the SVGs in your theme files:
+
+```php
+<?php echo file_get_contents( get_template_directory() . '/assets/icons/heart.svg' ); ?>
+```
