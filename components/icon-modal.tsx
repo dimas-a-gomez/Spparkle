@@ -12,6 +12,11 @@ interface IconModalProps {
     fill?: string;
     stroke?: string;
     strokeWidth?: string;
+    strokeLinecap?: string;
+    strokeLinejoin?: string;
+    width?: string;
+    height?: string;
+    xmlns?: string;
   } | null;
   onClose: () => void;
 }
@@ -45,7 +50,22 @@ export function IconModal({ icon, onClose }: IconModalProps) {
     setTimeout(() => setCopiedType(null), 2000);
   };
 
-  const svgCode = `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="${icon.viewBox}" fill="${icon.fill || 'none'}" stroke="${icon.stroke || 'none'}" ${icon.strokeWidth ? `stroke-width="${icon.strokeWidth}"` : ''} stroke-linecap="round" stroke-linejoin="round">\n  ${icon.path}\n</svg>`;
+  const getSvgCode = () => {
+    const attrs = [];
+    if (icon.xmlns) attrs.push(`xmlns="${icon.xmlns}"`);
+    if (icon.width) attrs.push(`width="${icon.width}"`);
+    if (icon.height) attrs.push(`height="${icon.height}"`);
+    if (icon.viewBox) attrs.push(`viewBox="${icon.viewBox}"`);
+    if (icon.fill) attrs.push(`fill="${icon.fill}"`);
+    if (icon.stroke) attrs.push(`stroke="${icon.stroke}"`);
+    if (icon.strokeWidth) attrs.push(`stroke-width="${icon.strokeWidth}"`);
+    if (icon.strokeLinecap) attrs.push(`stroke-linecap="${icon.strokeLinecap}"`);
+    if (icon.strokeLinejoin) attrs.push(`stroke-linejoin="${icon.strokeLinejoin}"`);
+    
+    return `<svg ${attrs.join(' ')}>\n  ${icon.path}\n</svg>`;
+  };
+
+  const svgCode = getSvgCode();
   const htmlCode = `<i class="icon-${icon.name}"></i>`;
   const bloggerCode = `<b:include name='icon-${icon.name}'/>`;
 
@@ -96,11 +116,11 @@ export function IconModal({ icon, onClose }: IconModalProps) {
               <svg 
                 className="relative z-10 w-[80px] h-[80px]"
                 viewBox={icon.viewBox}
-                fill={icon.fill || "none"}
-                stroke={icon.stroke || "none"}
+                fill={icon.fill}
+                stroke={icon.stroke}
                 strokeWidth={icon.strokeWidth}
-                strokeLinecap="round"
-                strokeLinejoin="round"
+                strokeLinecap={icon.strokeLinecap as any}
+                strokeLinejoin={icon.strokeLinejoin as any}
                 dangerouslySetInnerHTML={{ __html: icon.path }}
               />
               

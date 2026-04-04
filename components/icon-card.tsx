@@ -11,6 +11,11 @@ interface IconCardProps {
     fill?: string;
     stroke?: string;
     strokeWidth?: string;
+    strokeLinecap?: string;
+    strokeLinejoin?: string;
+    width?: string;
+    height?: string;
+    xmlns?: string;
   };
   onClick: () => void;
 }
@@ -33,11 +38,11 @@ export function IconCard({ icon, onClick }: IconCardProps) {
       <svg 
         className="w-8 h-8 text-zinc-800 dark:text-zinc-200 mb-3 transition-transform group-hover:scale-110"
         viewBox={icon.viewBox}
-        fill={icon.fill || "none"}
-        stroke={icon.stroke || "none"}
+        fill={icon.fill}
+        stroke={icon.stroke}
         strokeWidth={icon.strokeWidth}
-        strokeLinecap="round"
-        strokeLinejoin="round"
+        strokeLinecap={icon.strokeLinecap as any}
+        strokeLinejoin={icon.strokeLinejoin as any}
         dangerouslySetInnerHTML={{ __html: icon.path }}
       />
       <span className="text-xs font-medium text-zinc-500 dark:text-zinc-400 truncate w-full text-center">

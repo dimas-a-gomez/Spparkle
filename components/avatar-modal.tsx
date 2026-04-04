@@ -12,6 +12,11 @@ interface AvatarModalProps {
     fill?: string;
     stroke?: string;
     strokeWidth?: string;
+    strokeLinecap?: string;
+    strokeLinejoin?: string;
+    width?: string;
+    height?: string;
+    xmlns?: string;
   } | null;
   onClose: () => void;
 }
@@ -38,7 +43,18 @@ export function AvatarModal({ avatar, onClose }: AvatarModalProps) {
   if (!avatar) return null;
 
   const handleDownload = () => {
-    const svgContent = `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="${avatar.viewBox}" fill="${avatar.fill || 'none'}" stroke="${avatar.stroke || 'none'}" ${avatar.strokeWidth ? `stroke-width="${avatar.strokeWidth}"` : ''} stroke-linecap="round" stroke-linejoin="round">\n  ${avatar.path}\n</svg>`;
+    const attrs = [];
+    if (avatar.xmlns) attrs.push(`xmlns="${avatar.xmlns}"`);
+    if (avatar.width) attrs.push(`width="${avatar.width}"`);
+    if (avatar.height) attrs.push(`height="${avatar.height}"`);
+    if (avatar.viewBox) attrs.push(`viewBox="${avatar.viewBox}"`);
+    if (avatar.fill) attrs.push(`fill="${avatar.fill}"`);
+    if (avatar.stroke) attrs.push(`stroke="${avatar.stroke}"`);
+    if (avatar.strokeWidth) attrs.push(`stroke-width="${avatar.strokeWidth}"`);
+    if (avatar.strokeLinecap) attrs.push(`stroke-linecap="${avatar.strokeLinecap}"`);
+    if (avatar.strokeLinejoin) attrs.push(`stroke-linejoin="${avatar.strokeLinejoin}"`);
+    
+    const svgContent = `<svg ${attrs.join(' ')}>\n  ${avatar.path}\n</svg>`;
     const blob = new Blob([svgContent], { type: 'image/svg+xml' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
@@ -97,11 +113,11 @@ export function AvatarModal({ avatar, onClose }: AvatarModalProps) {
               <svg 
                 className="relative z-10 w-[120px] h-[120px]"
                 viewBox={avatar.viewBox}
-                fill={avatar.fill || "none"}
-                stroke={avatar.stroke || "none"}
+                fill={avatar.fill}
+                stroke={avatar.stroke}
                 strokeWidth={avatar.strokeWidth}
-                strokeLinecap="round"
-                strokeLinejoin="round"
+                strokeLinecap={avatar.strokeLinecap as any}
+                strokeLinejoin={avatar.strokeLinejoin as any}
                 dangerouslySetInnerHTML={{ __html: avatar.path }}
               />
               

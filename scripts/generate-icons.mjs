@@ -47,6 +47,11 @@ const icons = files.map(file => {
   if (stroke && /^(#ffffff|#fff|white)$/i.test(stroke)) stroke = 'none';
 
   const strokeWidth = getAttr('stroke-width') || getAttr('strokeWidth');
+  const strokeLinecap = getAttr('stroke-linecap') || getAttr('strokeLinecap');
+  const strokeLinejoin = getAttr('stroke-linejoin') || getAttr('strokeLinejoin');
+  const width = getAttr('width');
+  const height = getAttr('height');
+  const xmlns = getAttr('xmlns');
 
   return {
     name,
@@ -54,7 +59,12 @@ const icons = files.map(file => {
     viewBox,
     fill,
     stroke,
-    strokeWidth
+    strokeWidth,
+    strokeLinecap,
+    strokeLinejoin,
+    width,
+    height,
+    xmlns
   };
 });
 
