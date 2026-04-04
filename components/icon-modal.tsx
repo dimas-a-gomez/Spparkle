@@ -23,6 +23,7 @@ interface IconModalProps {
 
 export function IconModal({ icon, onClose }: IconModalProps) {
   const [copiedType, setCopiedType] = useState<string | null>(null);
+  const [activeTab, setActiveTab] = useState<'svg' | 'html' | 'blogger' | 'react' | 'wordpress'>('svg');
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -68,6 +69,18 @@ export function IconModal({ icon, onClose }: IconModalProps) {
   const svgCode = getSvgCode();
   const htmlCode = `<i class="icon-${icon.name}"></i>`;
   const bloggerCode = `<b:include name='icon-${icon.name}'/>`;
+  const reactCode = `<Icon name="${icon.name}" />`;
+  const wordpressCode = `[spkr icon="${icon.name}"]`;
+
+  const tabs = [
+    { id: 'svg', label: 'SVG', icon: <Code className="w-4 h-4" />, code: svgCode },
+    { id: 'html', label: 'HTML', icon: <FileCode className="w-4 h-4" />, code: htmlCode },
+    { id: 'blogger', label: 'Blogger', icon: <Terminal className="w-4 h-4" />, code: bloggerCode },
+    { id: 'react', label: 'React', icon: <Code className="w-4 h-4" />, code: reactCode },
+    { id: 'wordpress', label: 'WordPress', icon: <Terminal className="w-4 h-4" />, code: wordpressCode },
+  ] as const;
+
+  const activeTabData = tabs.find(t => t.id === activeTab) || tabs[0];
 
   return (
     <AnimatePresence>
@@ -143,33 +156,39 @@ export function IconModal({ icon, onClose }: IconModalProps) {
               </button>
             </div>
 
-            <div className="grid gap-4">
-              <CodeBlock
-                title="SVG Code"
-                icon={<Code className="w-4 h-4" />}
-                code={svgCode}
-                type="svg"
-                copied={copiedType === 'svg'}
-                onCopy={() => handleCopy(svgCode, 'svg')}
-              />
+            <div className="flex flex-col gap-4">
+              <div className="flex overflow-x-auto hide-scrollbar space-x-1 bg-zinc-100 dark:bg-zinc-800/50 p-1 rounded-xl">
+                {tabs.map((tab) => (
+                  <button
+                    key={tab.id}
+                    onClick={() => setActiveTab(tab.id)}
+                    className={`flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium rounded-lg transition-all whitespace-nowrap ${
+                      activeTab === tab.id
+                        ? 'bg-white dark:bg-zinc-900 text-zinc-900 dark:text-zinc-50 shadow-sm'
+                        : 'text-zinc-500 dark:text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-300 hover:bg-zinc-200/50 dark:hover:bg-zinc-800/50'
+                    }`}
+                  >
+                    {tab.icon}
+                    {tab.label}
+                  </button>
+                ))}
+              </div>
               
-              <CodeBlock
-                title="HTML Element"
-                icon={<FileCode className="w-4 h-4" />}
-                code={htmlCode}
-                type="html"
-                copied={copiedType === 'html'}
-                onCopy={() => handleCopy(htmlCode, 'html')}
-              />
-              
-              <CodeBlock
-                title="Blogger Include"
-                icon={<Terminal className="w-4 h-4" />}
-                code={bloggerCode}
-                type="blogger"
-                copied={copiedType === 'blogger'}
-                onCopy={() => handleCopy(bloggerCode, 'blogger')}
-              />
+              <AnimatePresence mode="wait">
+                <motion.div
+                  key={activeTab}
+                  initial={{ opacity: 0, y: 5 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -5 }}
+                  transition={{ duration: 0.15 }}
+                >
+                  <CodeBlock
+                    code={activeTabData.code}
+                    copied={copiedType === activeTab}
+                    onCopy={() => handleCopy(activeTabData.code, activeTab)}
+                  />
+                </motion.div>
+              </AnimatePresence>
             </div>
           </div>
         </motion.div>
@@ -178,15 +197,9 @@ export function IconModal({ icon, onClose }: IconModalProps) {
   );
 }
 
-function CodeBlock({ title, icon, code, type, copied, onCopy }: any) {
+function CodeBlock({ code, copied, onCopy }: any) {
   return (
     <div className="flex flex-col gap-2">
-      <div className="flex items-center justify-between">
-        <label className="text-sm font-medium text-zinc-600 dark:text-zinc-400 flex items-center gap-1.5">
-          {icon}
-          {title}
-        </label>
-      </div>
       <div className="relative group cursor-pointer" onClick={onCopy} title="Click to copy">
         <pre className="p-4 pr-12 bg-zinc-900 dark:bg-zinc-950 text-zinc-100 dark:text-zinc-300 rounded-xl text-sm font-mono border border-zinc-800 dark:border-zinc-800/80 transition-colors hover:border-zinc-700 dark:hover:border-zinc-700 whitespace-pre-wrap break-all">
           <code>{code}</code>
